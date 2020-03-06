@@ -18,9 +18,9 @@ The following documentation is almost a direct copy of Doctrine's documentation 
 You can create a builder by creating a new class instance:
 
 ```php
-    use Elixir\QueryBuilder;
+use Elixir\QueryBuilder;
 
-    $queryBuilder = QueryBuilder();
+$queryBuilder = QueryBuilder();
 ```
     
 You can export any built SQL clause by calling `->print()` or by just prefixing the builder with `(string)`:
