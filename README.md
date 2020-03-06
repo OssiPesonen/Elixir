@@ -40,7 +40,7 @@ use Elixir\QueryBuilder;
 $queryBuilder = QueryBuilder();
 ```
     
-You can export any built SQL clause by calling `->print()` or by just prefixing the builder with `(string)`:
+You can export any built SQL clause by calling `print()` or by just prefixing the builder with `(string)`:
 
 ```php
 $qb = new QueryBuilder();
@@ -93,7 +93,7 @@ $queryBuilder
     ->where('email = :email')
     ->setParameter('email', $userInputEmail);
     
-// Return parameter values
+// Return parameter values as an array
 $queryBuilder->getParameters();
 ```        
          
@@ -111,8 +111,7 @@ For ``SELECT`` queries you start with invoking the ``select()`` method
 ```php
 $queryBuilder
     ->select('id', 'name')
-    ->from('users')
-    ->print();
+    ->from('users');
 ```
 
 For ``INSERT``, ``UPDATE`` and ``DELETE`` queries you can pass the
@@ -121,16 +120,13 @@ and ``delete($tableName)``:
 
 ```php
 $queryBuilder
-    ->insert('users')
-    ->print();
+    ->insert('users');
 
 $queryBuilder
-    ->update('users')
-    ->print();
+    ->update('users');
 
 $queryBuilder
-    ->delete('users')
-    ->print();
+    ->delete('users');
 ```
 
 You can convert a query builder to its SQL string representation
@@ -145,8 +141,7 @@ The ``SELECT`` statement can be specified with a ``DISTINCT`` clause:
 $queryBuilder
     ->select('name')
     ->distinct()
-    ->from('users')
-    ->print();
+    ->from('users');
 ```
 
 WHERE
@@ -159,8 +154,7 @@ clauses with the following API:
 $queryBuilder
     ->select('id', 'name')
     ->from('users')
-    ->where('email = ?')
-    ->print();
+    ->where('email = ?');
 ```
 
 Calling ``where()`` overwrites the previous clause and you can prevent
@@ -177,8 +171,7 @@ alias can be specified.
 $queryBuilder
     ->select('u.id', 'u.name')
     ->from('users', 'u')
-    ->where('u.email = ?')
-    ->print();
+    ->where('u.email = ?');
 ```
 
 GROUP BY and HAVING
@@ -195,8 +188,7 @@ $queryBuilder
     ->select('DATE(last_login) as date', 'COUNT(id) AS users')
     ->from('users')
     ->groupBy('DATE(last_login)')
-    ->having('users > 10')
-    ->print();
+    ->having('users > 10');
 ```
 
 JOIN
@@ -218,8 +210,7 @@ join-table and the fourth argument contains the ``ON`` clause.
 $queryBuilder
     ->select('u.id', 'u.name', 'p.number')
     ->from('users', 'u')
-    ->innerJoin('u', 'phonenumbers', 'p', 'u.id = p.user_id')
-    ->print();
+    ->innerJoin('u', 'phonenumbers', 'p', 'u.id = p.user_id');
 ```
 
 The method signature for ``join()``, ``innerJoin()``, ``leftJoin()`` and
@@ -238,8 +229,7 @@ $queryBuilder
     ->select('id', 'name')
     ->from('users')
     ->orderBy('username', 'ASC')
-    ->addOrderBy('last_login', 'ASC NULLS FIRST')
-    ->print();
+    ->addOrderBy('last_login', 'ASC NULLS FIRST');
 ```
 
 Use the ``addOrderBy`` method to add instead of replace the ``orderBy`` clause.
@@ -258,8 +248,7 @@ $queryBuilder
     ->select('id', 'name')
     ->from('users')
     ->setFirstResult(10)
-    ->setMaxResults(20)
-    ->print();
+    ->setMaxResults(20);
 ```
 
 INSERT and VALUES
@@ -278,8 +267,7 @@ $queryBuilder
         )
     )
     ->setParameter(0, $username)
-    ->setParameter(1, $password)
-    ->print();
+    ->setParameter(1, $password);
 
 // INSERT INTO users (name, password) VALUES (?, ?)
 ```
@@ -294,8 +282,7 @@ $queryBuilder
     ->setValue('name', '?')
     ->setValue('password', '?')
     ->setParameter(0, $username)
-    ->setParameter(1, $password)
-    ->print();
+    ->setParameter(1, $password);
 
 // INSERT INTO users (name, password) VALUES (?, ?)
 ```
@@ -310,16 +297,14 @@ $queryBuilder
             'name' => '?'
         )
     )
-    ->setParameter(0, $username)
-    ->print();
+    ->setParameter(0, $username);
 
 // INSERT INTO users (name) VALUES (?)
 
 if ($password) {
     $queryBuilder
         ->setValue('password', '?')
-        ->setParameter(1, $password)
-        ->print();
+        ->setParameter(1, $password);
 
     // INSERT INTO users (name, password) VALUES (?, ?)
 }
@@ -329,8 +314,7 @@ Not setting any values at all will result in an empty insert statement:
 
 ```php
 $queryBuilder
-    ->insert('users')
-    ->print();
+    ->insert('users');
 
 // INSERT INTO users () VALUES ()
 ```
@@ -348,8 +332,7 @@ $queryBuilder
     ->update('users', 'u')
     ->set('u.logins', 'u.logins + 1')
     ->set('u.last_login', '?')
-    ->setParameter(0, $userInputLastLogin)
-    ->print();
+    ->setParameter(0, $userInputLastLogin);
 ```
 
 Building Expressions
@@ -370,8 +353,7 @@ $queryBuilder
             $queryBuilder->expr()->eq('username', '?'),
             $queryBuilder->expr()->eq('email', '?')
         )
-    )
-    ->print();
+    );
 ```
 
 The ``and()`` and ``or()`` methods accept an arbitrary amount
