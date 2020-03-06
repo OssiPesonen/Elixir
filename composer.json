@@ -1,5 +1,5 @@
 {
-    "name": "ossipesonen/querybuilder",
+    "name": "ossipesonen/elixir",
     "type": "library",
     "description": "Zero dependency PHP SQL Query Builder extracted from Doctrine DBAL",
     "keywords": [
