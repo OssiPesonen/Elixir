@@ -69,16 +69,17 @@ $queryBuilder
     ->select('id', 'name')
     ->from('users')
     ->where('email = ?')
-    ->setParameter(0, $userInputEmail)
-    ->print();
+    ->setParameter(0, $userInputEmail);
 
 // Or named parameters    
 $queryBuilder
     ->select('id', 'name')
     ->from('users')
     ->where('email = :email')
-    ->setParameter('email', $userInputEmail)
-    ->print();
+    ->setParameter('email', $userInputEmail);
+    
+// Return parameter values
+$queryBuilder->getParameters();
 ```        
          
 **Note:** The numerical parameters in the QueryBuilder start with index 0 instead of 1
