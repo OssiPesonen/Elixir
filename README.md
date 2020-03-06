@@ -18,7 +18,6 @@ The following documentation is almost a direct copy of Doctrine's documentation 
 You can create a builder by creating a new class instance:
 
 ```php
-    <?php
     use Elixir\QueryBuilder;
 
     $queryBuilder = QueryBuilder();
@@ -27,9 +26,6 @@ You can create a builder by creating a new class instance:
 You can export any built SQL clause by calling `->print()` or by just prefixing the builder with `(string)`:
 
 ```php
-<?php
-use Elixir\QueryBuilder;
-
 $qb = new QueryBuilder();
 
 echo $qb->select('u.id')
@@ -69,8 +65,6 @@ input to any of the methods of the QueryBuilder and use the placeholder
 ``$queryBuilder->setParameter($placeholder, $value)`` instead:
 
 ```php
-<?php
-
 $queryBuilder
     ->select('id', 'name')
     ->from('users')
@@ -99,8 +93,6 @@ are building depends on the methods you are using.
 For ``SELECT`` queries you start with invoking the ``select()`` method
 
 ```php
-<?php
-
 $queryBuilder
     ->select('id', 'name')
     ->from('users')
@@ -112,8 +104,6 @@ table name into the ``insert($tableName)``, ``update($tableName)``
 and ``delete($tableName)``:
 
 ```php
-<?php
-
 $queryBuilder
     ->insert('users')
     ->print();
@@ -136,8 +126,6 @@ DISTINCT-Clause
 The ``SELECT`` statement can be specified with a ``DISTINCT`` clause:
 
 ```php
-<?php
-
 $queryBuilder
     ->select('name')
     ->distinct()
@@ -152,8 +140,6 @@ The ``SELECT``, ``UPDATE`` and ``DELETE`` types of queries allow where
 clauses with the following API:
 
 ```php
-<?php
-
 $queryBuilder
     ->select('id', 'name')
     ->from('users')
@@ -172,8 +158,6 @@ The ``from()`` method takes an optional second parameter with which a table
 alias can be specified.
 
 ```php
-<?php
-
 $queryBuilder
     ->select('u.id', 'u.name')
     ->from('users', 'u')
@@ -191,7 +175,6 @@ For the ``GROUP BY`` you can use the methods ``groupBy()`` which replaces
 previous expressions or ``addGroupBy()`` which adds to them:
 
 ```php
-<?php
 $queryBuilder
     ->select('DATE(last_login) as date', 'COUNT(id) AS users')
     ->from('users')
@@ -290,8 +273,6 @@ Setting single values instead of all at once is also possible with the
 ``setValue()`` method:
 
 ```php
-<?php
-
 $queryBuilder
     ->insert('users')
     ->setValue('name', '?')
@@ -306,8 +287,6 @@ $queryBuilder
 Of course you can also use both methods in combination:
 
 ```php
-<?php
-
 $queryBuilder
     ->insert('users')
     ->values(
@@ -333,8 +312,6 @@ if ($password) {
 Not setting any values at all will result in an empty insert statement:
 
 ```php
-<?php
-
 $queryBuilder
     ->insert('users')
     ->print();
@@ -351,8 +328,6 @@ Be aware that the second argument allows expressions and is not safe for
 user-input:
 
 ```php
-<?php
-
 $queryBuilder
     ->update('users', 'u')
     ->set('u.logins', 'u.logins + 1')
@@ -371,8 +346,6 @@ for building these query parts. You can invoke the expression API, by calling
 Most notably you can use expressions to build nested And-/Or statements:
 
 ```php
-<?php
-
 $queryBuilder
     ->select('id', 'name')
     ->from('users')
@@ -400,8 +373,6 @@ to bind a value to a placeholder and directly use that placeholder
 in your query as a return value:
 
 ```php
-<?php
-
 $queryBuilder = new QueryBuilder();
 
 $queryBuilder->select('count(id) as count')
