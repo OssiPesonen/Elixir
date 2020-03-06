@@ -18,7 +18,7 @@ You can install the package using composer
 * [DISTINCT](#distinct) 
 * [WHERE](#where)
 * [Aliases](#aliases)
-* [GROUP BY and HAVING Clause](#group-by-and-having-clause)
+* [GROUP BY and HAVING Clause](#group-by-and-having)
 * [JOIN](#join)
 * [ORDERBY](#orderby)
 * [LIMIT](#limit)
