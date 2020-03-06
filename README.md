@@ -11,20 +11,21 @@ You can install the package using composer
     composer require ossipesonen/elixir
     
 ### Table of Contents  
-[How to use](#how-to-use)  
-[Security: Prevent SQL injections](#security-prevent-sql-injections)
-[Building a Query](#building-a-query)
-[DISTINCT](#distinct)
-[WHERE](#where)
-[Table alias](#table-alias)
-[GROUP BY and HAVING Clause](#group-by-and-having-clause)
-[JOIN](#join)
-[ORDERBY](#orderby)
-[LIMIT](#limit)
-[VALUES](#values)
-[SET](#set)
-[Building expressions](#building-expressions)
-[Binding Parameters to Placeholders](#binding-parameters-to-placeholders)
+
+* [How to use](#how-to-use)
+* [Security: Prevent SQL injections](#security-prevent-sql-injections) 
+* [Building a Query](#building-a-query) 
+* [DISTINCT](#distinct) 
+* [WHERE](#where)
+* [Aliases](#aliases)
+* [GROUP BY and HAVING Clause](#group-by-and-having-clause)
+* [JOIN](#join)
+* [ORDERBY](#orderby)
+* [LIMIT](#limit)
+* [VALUES](#values)
+* [SET](#set)
+* [Building expressions](#building-expressions)
+* [Binding Parameters to Placeholders](#binding-parameters-to-placeholders)
 
 
 ## How to use
@@ -168,7 +169,7 @@ Calling ``where()`` overwrites the previous clause and you can prevent
 this by combining expressions with ``andWhere()`` and ``orWhere()`` methods.
 You can alternatively use expressions to generate the where clause.
 
-Table alias
+Aliases
 ----------------
 
 The ``from()`` method takes an optional second parameter with which a table
