@@ -9,6 +9,22 @@ The query builder produces ready-to-use SQL clauses for you with separate parame
 You can install the package using composer
 
     composer require ossipesonen/elixir
+    
+### Table of Contents  
+[How to use](#how-to-use)  
+[Security: Prevent SQL injections](#security-prevent-sql-injections)
+[Building a Query](#building-a-query)
+[DISTINCT](#distinct)
+[WHERE](#where)
+[Table alias](#table-alias)
+[GROUP BY and HAVING Clause](#group-by-and-having-clause)
+[JOIN](#join)
+[ORDERBY](#orderby)
+[LIMIT](#limit)
+[VALUES](#values)
+[SET](#set)
+[Building expressions](#building-expressions)
+[Binding Parameters to Placeholders](#binding-parameters-to-placeholders)
 
 
 ## How to use
@@ -46,7 +62,7 @@ echo (string)$queryBuilder;
 // SELECT DISTINCT u.id FROM users u
 ```
             
-Security: Safely preventing SQL Injection
+Security: Prevent SQL injections
 -----------------------------------------
 
 It is important to understand how the query builder works in terms of
@@ -121,7 +137,7 @@ $queryBuilder
 You can convert a query builder to its SQL string representation
 by calling ``$queryBuilder->getSQL()`` or casting the object to string.
 
-DISTINCT-Clause
+DISTINCT
 ----------------
 
 The ``SELECT`` statement can be specified with a ``DISTINCT`` clause:
@@ -134,7 +150,7 @@ $queryBuilder
     ->print();
 ```
 
-WHERE-Clause
+WHERE
 ----------------
 
 The ``SELECT``, ``UPDATE`` and ``DELETE`` types of queries allow where
@@ -166,7 +182,7 @@ $queryBuilder
     ->print();
 ```
 
-GROUP BY and HAVING Clause
+GROUP BY and HAVING
 --------------------------------
 
 The ``SELECT`` statement can be specified with ``GROUP BY`` and ``HAVING`` clauses.
@@ -184,7 +200,7 @@ $queryBuilder
     ->print();
 ```
 
-Join Clauses
+JOIN
 ----------------
 
 For ``SELECT`` clauses you can generate different types of joins: ``INNER``,
@@ -211,7 +227,7 @@ The method signature for ``join()``, ``innerJoin()``, ``leftJoin()`` and
 ``rightJoin()`` is the same. ``join()`` is a shorthand syntax for
 ``innerJoin()``.
 
-Order-By Clause
+OrderBy
 ----------------
 
 The ``orderBy($sort, $order = null)`` method adds an expression to the ``ORDER
@@ -229,7 +245,7 @@ $queryBuilder
 
 Use the ``addOrderBy`` method to add instead of replace the ``orderBy`` clause.
 
-Limit Clause
+LIMIT
 ----------------
 
 Only a few database vendors have the ``LIMIT`` clause as known from MySQL,
@@ -247,7 +263,7 @@ $queryBuilder
     ->print();
 ```
 
-VALUES Clause
+VALUES
 ----------------
 
 For the ``INSERT`` clause setting the values for columns to insert can be
@@ -320,7 +336,7 @@ $queryBuilder
 // INSERT INTO users () VALUES ()
 ```
 
-Set Clause
+SET
 ----------------
 
 For the ``UPDATE`` clause setting columns to new values is necessary
