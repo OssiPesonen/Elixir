@@ -2,7 +2,7 @@
 
 ### PHP Query Builder
 
-This is a **zero dependency fork** of the Doctrine DBAL Query Builder version 2.10.0. 
+This is a **zero dependency fork** of the Doctrine DBAL Query Builder 2.7.
 
 Basically a version without the **Connection dependency**, so no database connection is required or available via this library! This library produces a ready-to-use SQL clause for you with parameters.
 
@@ -10,9 +10,10 @@ You can install the package using composer
 
     composer require ossipesonen/elixir
 
-## Documentation
 
-The following documentation is almost a direct copy of Doctrine's documentation of the Query builder with small variations.
+## How to use
+
+The following documentation is almost a direct copy of Doctrine's documentation of the QueryBuilder.
 
 You can create a builder by creating a new class instance:
 
@@ -61,6 +62,7 @@ and are therefore subject to the possibility of SQL injection.
 To safely work with the QueryBuilder you should **NEVER** pass user
 input to any of the methods of the QueryBuilder and use the placeholder
 ``?`` or ``:name`` syntax in combination with
+
 ``$queryBuilder->setParameter($placeholder, $value)`` instead:
 
     <?php
@@ -72,10 +74,17 @@ input to any of the methods of the QueryBuilder and use the placeholder
         ->setParameter(0, $userInputEmail)
         ->print();
         
-.. note::
-
-    The numerical parameters in the QueryBuilder API start with the needle
-    ``0``, not with ``1`` as in the PDO API.
+    // Or named parameters    
+    $queryBuilder
+        ->select('id', 'name')
+        ->from('users')
+        ->where('email = :email')
+        ->setParameter('email', $userInputEmail)
+        ->print();
+        
+    
+        
+**Note:** The numerical parameters in the QueryBuilder start with index 0 instead of 1
 
 Building a Query
 ----------------
@@ -96,8 +105,6 @@ For ``SELECT`` queries you start with invoking the ``select()`` method
 For ``INSERT``, ``UPDATE`` and ``DELETE`` queries you can pass the
 table name into the ``insert($tableName)``, ``update($tableName)``
 and ``delete($tableName)``:
-
-
 
     <?php
 
@@ -385,7 +392,7 @@ Binding Parameters to Placeholders
 ----------------------------------
 
 It is often not necessary to know about the exact placeholder names
-during the building of a query. You can use two helper methods
+during the building of a query. You can use ```setParameter```
 to bind a value to a placeholder and directly use that placeholder
 in your query as a return value:
 
