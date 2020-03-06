@@ -2,9 +2,9 @@
 
 ### PHP Query Builder
 
-This is a **zero dependency fork** of the Doctrine DBAL Query Builder 2.7.
+This is a **zero dependency fork** of the Doctrine DBAL Query Builder 2.7. It does not require the **Connection** as a dependency, so no database connection is required or available via this library! The only dependencies are on the `dev` side and those only include PHPUnit for testing.
 
-Basically a version without the **Connection dependency**, so no database connection is required or available via this library! This library produces a ready-to-use SQL clause for you with parameters.
+The query builder produces ready-to-use SQL clauses for you with separate parameters to be injected into a connection implementation of your own choosing.
 
 You can install the package using composer
 
@@ -17,13 +17,16 @@ The following documentation is almost a direct copy of Doctrine's documentation 
 
 You can create a builder by creating a new class instance:
 
+```php
     <?php
     use Elixir\QueryBuilder;
 
     $queryBuilder = QueryBuilder();
+```
     
 You can export any built SQL clause by calling `->print()` or by just prefixing the builder with `(string)`:
 
+```php
     <?php
     use Elixir\QueryBuilder;
    
@@ -45,7 +48,7 @@ You can export any built SQL clause by calling `->print()` or by just prefixing 
     echo (string)$queryBuilder;
     
     // SELECT DISTINCT u.id FROM users u
-    
+```
             
 Security: Safely preventing SQL Injection
 -----------------------------------------
@@ -65,6 +68,7 @@ input to any of the methods of the QueryBuilder and use the placeholder
 
 ``$queryBuilder->setParameter($placeholder, $value)`` instead:
 
+```php
     <?php
 
     $queryBuilder
@@ -81,9 +85,8 @@ input to any of the methods of the QueryBuilder and use the placeholder
         ->where('email = :email')
         ->setParameter('email', $userInputEmail)
         ->print();
-        
-    
-        
+```        
+         
 **Note:** The numerical parameters in the QueryBuilder start with index 0 instead of 1
 
 Building a Query
@@ -95,17 +98,20 @@ are building depends on the methods you are using.
 
 For ``SELECT`` queries you start with invoking the ``select()`` method
 
+```php
     <?php
 
     $queryBuilder
         ->select('id', 'name')
         ->from('users')
         ->print();
+```
 
 For ``INSERT``, ``UPDATE`` and ``DELETE`` queries you can pass the
 table name into the ``insert($tableName)``, ``update($tableName)``
 and ``delete($tableName)``:
 
+```php
     <?php
 
     $queryBuilder
@@ -119,6 +125,7 @@ and ``delete($tableName)``:
     $queryBuilder
         ->delete('users')
         ->print();
+```
 
 You can convert a query builder to its SQL string representation
 by calling ``$queryBuilder->getSQL()`` or casting the object to string.
@@ -128,8 +135,7 @@ DISTINCT-Clause
 
 The ``SELECT`` statement can be specified with a ``DISTINCT`` clause:
 
-
-
+```php
     <?php
 
     $queryBuilder
@@ -137,6 +143,7 @@ The ``SELECT`` statement can be specified with a ``DISTINCT`` clause:
         ->distinct()
         ->from('users')
         ->print();
+```
 
 WHERE-Clause
 ----------------
@@ -144,8 +151,7 @@ WHERE-Clause
 The ``SELECT``, ``UPDATE`` and ``DELETE`` types of queries allow where
 clauses with the following API:
 
-
-
+```php
     <?php
 
     $queryBuilder
@@ -153,6 +159,7 @@ clauses with the following API:
         ->from('users')
         ->where('email = ?')
         ->print();
+```
 
 Calling ``where()`` overwrites the previous clause and you can prevent
 this by combining expressions with ``andWhere()`` and ``orWhere()`` methods.
@@ -164,8 +171,7 @@ Table alias
 The ``from()`` method takes an optional second parameter with which a table
 alias can be specified.
 
-
-
+```php
     <?php
 
     $queryBuilder
@@ -173,6 +179,7 @@ alias can be specified.
         ->from('users', 'u')
         ->where('u.email = ?')
         ->print();
+```
 
 GROUP BY and HAVING Clause
 --------------------------------
@@ -183,8 +190,7 @@ corresponding ``andHaving()`` and ``orHaving()`` methods to combine predicates.
 For the ``GROUP BY`` you can use the methods ``groupBy()`` which replaces
 previous expressions or ``addGroupBy()`` which adds to them:
 
-
-
+```php
     <?php
     $queryBuilder
         ->select('DATE(last_login) as date', 'COUNT(id) AS users')
@@ -192,6 +198,7 @@ previous expressions or ``addGroupBy()`` which adds to them:
         ->groupBy('DATE(last_login)')
         ->having('users > 10')
         ->print();
+```
 
 Join Clauses
 ----------------
@@ -208,13 +215,14 @@ As a second and third argument you can then specify the name and alias of the
 join-table and the fourth argument contains the ``ON`` clause.
 
 
-
+```php
     <?php
     $queryBuilder
         ->select('u.id', 'u.name', 'p.number')
         ->from('users', 'u')
         ->innerJoin('u', 'phonenumbers', 'p', 'u.id = p.user_id')
         ->print();
+```
 
 The method signature for ``join()``, ``innerJoin()``, ``leftJoin()`` and
 ``rightJoin()`` is the same. ``join()`` is a shorthand syntax for
@@ -227,8 +235,7 @@ The ``orderBy($sort, $order = null)`` method adds an expression to the ``ORDER
 BY`` clause. Be aware that the optional ``$order`` parameter is not safe for
 user input and accepts SQL expressions.
 
-
-
+```php
     <?php
     $queryBuilder
         ->select('id', 'name')
@@ -236,6 +243,7 @@ user input and accepts SQL expressions.
         ->orderBy('username', 'ASC')
         ->addOrderBy('last_login', 'ASC NULLS FIRST')
         ->print();
+```
 
 Use the ``addOrderBy`` method to add instead of replace the ``orderBy`` clause.
 
@@ -248,8 +256,7 @@ To use this functionality you have to call the methods ``setFirstResult($offset)
 to set the offset and ``setMaxResults($limit)`` to set the limit of results
 returned.
 
-
-
+```php
     <?php
     $queryBuilder
         ->select('id', 'name')
@@ -257,6 +264,7 @@ returned.
         ->setFirstResult(10)
         ->setMaxResults(20)
         ->print();
+```
 
 VALUES Clause
 ----------------
@@ -264,8 +272,7 @@ VALUES Clause
 For the ``INSERT`` clause setting the values for columns to insert can be
 done with the ``values()`` method on the query builder:
 
-
-
+```php
     <?php
 
     $queryBuilder
@@ -281,13 +288,13 @@ done with the ``values()`` method on the query builder:
         ->print();
         
     // INSERT INTO users (name, password) VALUES (?, ?)
+```
 
 Each subsequent call to ``values()`` overwrites any previous set values.
 Setting single values instead of all at once is also possible with the
 ``setValue()`` method:
 
-
-
+```php
     <?php
 
     $queryBuilder
@@ -299,11 +306,11 @@ Setting single values instead of all at once is also possible with the
         ->print();
         
     // INSERT INTO users (name, password) VALUES (?, ?)
+```
 
 Of course you can also use both methods in combination:
 
-
-
+```php
     <?php
 
     $queryBuilder
@@ -326,11 +333,11 @@ Of course you can also use both methods in combination:
             
         // INSERT INTO users (name, password) VALUES (?, ?)
     }
+```
 
 Not setting any values at all will result in an empty insert statement:
 
-
-
+```php
     <?php
 
     $queryBuilder
@@ -338,6 +345,7 @@ Not setting any values at all will result in an empty insert statement:
         ->print();
         
     // INSERT INTO users () VALUES ()
+```
 
 Set Clause
 ----------------
@@ -347,7 +355,7 @@ and can be done with the ``set()`` method on the query builder.
 Be aware that the second argument allows expressions and is not safe for
 user-input:
 
-
+```php
 
     <?php
 
@@ -357,6 +365,7 @@ user-input:
         ->set('u.last_login', '?')
         ->setParameter(0, $userInputLastLogin)
         ->print();
+```
 
 Building Expressions
 --------------------
@@ -367,8 +376,7 @@ for building these query parts. You can invoke the expression API, by calling
 
 Most notably you can use expressions to build nested And-/Or statements:
 
-
-
+```php
     <?php
 
     $queryBuilder
@@ -381,6 +389,7 @@ Most notably you can use expressions to build nested And-/Or statements:
             )
         )
         ->print();
+```
 
 The ``and()`` and ``or()`` methods accept an arbitrary amount
 of arguments and can be nested in each other.
@@ -396,6 +405,7 @@ during the building of a query. You can use ```setParameter```
 to bind a value to a placeholder and directly use that placeholder
 in your query as a return value:
 
+```php
     <?php
 
     $queryBuilder = new QueryBuilder();
@@ -421,3 +431,4 @@ in your query as a return value:
      *     string(19) "2020-03-06 16:00:00"
      *   }
      */    
+```
