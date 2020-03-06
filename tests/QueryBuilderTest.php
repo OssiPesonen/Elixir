@@ -6,6 +6,7 @@ namespace Tests\Elixir;
 
 use Elixir\QueryBuilder;
 use Elixir\ParameterType;
+use MongoDB\Driver\Query;
 use PHPUnit\Framework\TestCase;
 
 class QueryBuilderTest extends TestCase {
@@ -26,6 +27,18 @@ class QueryBuilderTest extends TestCase {
            ->from('users', 'u');
 
         self::assertEquals('SELECT u.id FROM users u', (string) $qb);
+    }
+
+    public function testSimpleSelectWithDistinctWithPrint() : void
+    {
+        $qb = new QueryBuilder();
+
+        $qb->select('u.id')
+           ->distinct()
+           ->from('users', 'u')
+            ->print();
+
+        self::assertEquals('SELECT DISTINCT u.id FROM users u', $qb);
     }
 
     public function testSimpleSelectWithDistinct() : void
@@ -761,6 +774,25 @@ class QueryBuilderTest extends TestCase {
            ->from('users');
 
         self::assertEquals('SELECT id FROM users', (string) $qb);
+    }
+
+    public function testParameters() {
+        $qb = new QueryBuilder();
+
+        $qb->select('count(id) as count')
+           ->from('sent_emails');
+
+        $qb->where('sent_emails.email = :email')->setParameter('email', 'test@example.com');
+        $qb->andWhere('sent_emails.sent > :start')->setParameter('start', date('Y-m-d H:i:s', strtotime('2020-03-06 12:00:00')));
+        $qb->andWhere('sent_emails.sent < :end')->setParameter('end', date('Y-m-d H:i:s', strtotime('2020-03-06 16:00:00')));
+
+        $this->assertEquals("SELECT count(id) as count FROM sent_emails WHERE (sent_emails.email = :email) AND (sent_emails.sent > :start) AND (sent_emails.sent < :end)", (string)$qb);
+
+        $parameters = $qb->getParameters();
+
+        $this->assertEquals('test@example.com', $parameters['email']);
+        $this->assertEquals('2020-03-06 12:00:00', $parameters['start']);
+        $this->assertEquals('2020-03-06 16:00:00', $parameters['end']);
     }
 
     public function testSimpleSelectWithMatchingTableAlias() : void
