@@ -6,6 +6,10 @@ This is a **zero dependency fork** of the Doctrine DBAL Query Builder version 2.
 
 Basically a version without the **Connection dependency**, so no database connection is required or available via this library! This library produces a ready-to-use SQL clause for you with parameters.
 
+You can install the package using composer
+
+    composer require ossipesonen/elixir
+
 ## Documentation
 
 The following documentation is almost a direct copy of Doctrine's documentation of the Query builder with small variations.
