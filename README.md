@@ -373,8 +373,6 @@ to bind a value to a placeholder and directly use that placeholder
 in your query as a return value:
 
 ```php
-$queryBuilder = new QueryBuilder();
-
 $queryBuilder->select('count(id) as count')
    ->from('sent_emails');
    ->where('sent_emails.email = :email')->setParameter('email', 'test@example.com');
@@ -383,9 +381,9 @@ $queryBuilder->select('count(id) as count')
 
 // SELECT count(id) as count FROM sent_emails WHERE (sent_emails.email = :email) AND (sent_emails.sent > :start) AND (sent_emails.sent < :end)
 
-// You can retrieve parameters as an associative array
+// You can return the parameter values in an associative array
 
-$queryBuilder->getParameters();
+var_dump($queryBuilder->getParameters());
 
 /* {
  *     ["email"]=>
