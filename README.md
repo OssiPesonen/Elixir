@@ -22,8 +22,8 @@ You can install the package using composer
 * [JOIN](#join)
 * [ORDERBY](#orderby)
 * [LIMIT](#limit)
-* [VALUES](#values)
-* [SET](#set)
+* [INSERT and VALUES](#insert-and-values)
+* [UPDATE and SET](#update-and-set)
 * [Building expressions](#building-expressions)
 * [Binding Parameters to Placeholders](#binding-parameters-to-placeholders)
 
@@ -228,7 +228,7 @@ The method signature for ``join()``, ``innerJoin()``, ``leftJoin()`` and
 ``rightJoin()`` is the same. ``join()`` is a shorthand syntax for
 ``innerJoin()``.
 
-OrderBy
+ORDERBY
 ----------------
 
 The ``orderBy($sort, $order = null)`` method adds an expression to the ``ORDER
@@ -264,7 +264,7 @@ $queryBuilder
     ->print();
 ```
 
-VALUES
+INSERT and VALUES
 ----------------
 
 For the ``INSERT`` clause setting the values for columns to insert can be
@@ -337,7 +337,7 @@ $queryBuilder
 // INSERT INTO users () VALUES ()
 ```
 
-SET
+UPDATE and SET
 ----------------
 
 For the ``UPDATE`` clause setting columns to new values is necessary
