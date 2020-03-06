@@ -72,14 +72,12 @@ every clause and position the QueryBuilder can only prevent
 SQL injections for calls to the methods ``setFirstResult()`` and
 ``setMaxResults()``.
 
-All other methods cannot distinguish between user- and developer input
-and are therefore subject to the possibility of SQL injection.
+**All other methods cannot distinguish between user- and developer input
+and are therefore subject to the possibility of SQL injection.**
 
 To safely work with the QueryBuilder you should **NEVER** pass user
-input to any of the methods of the QueryBuilder and use the placeholder
-``?`` or ``:name`` syntax in combination with
-
-``$queryBuilder->setParameter($placeholder, $value)`` instead:
+input to any of the methods of the QueryBuilder. Instead you should use the placeholder
+``?`` or ``:name`` syntax in combination with ``setParameter($placeholder, $value)`` instead. This will create a prepared statement for you where you pass the SQL clause (containing placeholders) and parameter values separately to your database engine and let it handle security and optimization for you.
 
 ```php
 $queryBuilder
