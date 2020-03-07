@@ -365,10 +365,7 @@ on the Expression object that you can see on the API documentation.
 Binding Parameters to Placeholders
 ----------------------------------
 
-It is often not necessary to know about the exact placeholder names
-during the building of a query. You can use ```setParameter```
-to bind a value to a placeholder and directly use that placeholder
-in your query as a return value:
+It is often not necessary to know about the exact placeholder names during the building of a query. You can use two helper methods to bind a value to a placeholder and directly use that placeholder in your query as a return value:
 
 ```php
 
