@@ -37,7 +37,7 @@ You can create a builder by creating a new class instance:
 ```php
 use Elixir\QueryBuilder;
 
-$queryBuilder = QueryBuilder();
+$queryBuilder = new QueryBuilder();
 ```
     
 You can export any built SQL clause by calling `print()` or by just prefixing the builder with `(string)`:
@@ -72,7 +72,7 @@ every clause and position the QueryBuilder can only prevent
 SQL injections for calls to the methods ``setFirstResult()`` and
 ``setMaxResults()``.
 
-**All other methods cannot distinguish between user- and developer input
+**All other methods cannot distinguish between user or developer input
 and are therefore subject to the possibility of SQL injection.**
 
 To safely work with the QueryBuilder you should **NEVER** pass user
