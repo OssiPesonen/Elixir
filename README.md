@@ -371,25 +371,17 @@ to bind a value to a placeholder and directly use that placeholder
 in your query as a return value:
 
 ```php
-$queryBuilder->select('count(id) as count')
-   ->from('sent_emails');
-   ->where('sent_emails.email = :email')->setParameter('email', 'test@example.com');
-   ->andWhere('sent_emails.sent > :start')->setParameter('start', date('Y-m-d H:i:s', strtotime('2020-03-06 12:00:00')));
-   ->andWhere('sent_emails.sent < :end')->setParameter('end', date('Y-m-d H:i:s', strtotime('2020-03-06 16:00:00')));
 
-// SELECT count(id) as count FROM sent_emails WHERE (sent_emails.email = :email) AND (sent_emails.sent > :start) AND (sent_emails.sent < :end)
+$queryBuilder
+    ->select('id', 'name')
+    ->from('users')
+    ->where('email = ' .  $queryBuilder->createNamedParameter($userInputEmail));
+    
+// SELECT id, name FROM users WHERE email = :dcValue1
 
-// You can return the parameter values in an associative array
-
-var_dump($queryBuilder->getParameters());
-
-/* {
- *     ["email"]=>
- *     string(16) "test@example.com"
- *     ["start"]=>
- *     string(19) "2020-03-06 12:00:00"
- *     ["end"]=>
- *     string(19) "2020-03-06 16:00:00"
- *   }
- */    
-```
+$queryBuilder
+    ->select('id', 'name')
+    ->from('users')
+    ->where('email = ' .  $queryBuilder->createPositionalParameter($userInputEmail));
+    
+// SELECT id, name FROM users WHERE email = ?
