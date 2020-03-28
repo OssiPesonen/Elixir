@@ -50,6 +50,21 @@ final class ParameterType
     public const BINARY = 16;
 
     /**
+     * Represents an array of ints to be expanded by Doctrine SQL parsing.
+     */
+    public const PARAM_INT_ARRAY = ParameterType::INTEGER + self::ARRAY_PARAM_OFFSET;
+
+    /**
+     * Represents an array of strings to be expanded by Doctrine SQL parsing.
+     */
+    public const PARAM_STR_ARRAY = ParameterType::STRING + self::ARRAY_PARAM_OFFSET;
+
+    /**
+     * Offset by which PARAM_* constants are detected as arrays of the param type.
+     */
+    public const ARRAY_PARAM_OFFSET = 100;
+
+    /**
      * This class cannot be instantiated.
      */
     private function __construct()
