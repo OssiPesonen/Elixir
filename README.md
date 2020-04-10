@@ -161,6 +161,8 @@ Calling ``where()`` overwrites the previous clause and you can prevent
 this by combining expressions with ``andWhere()`` and ``orWhere()`` methods.
 You can alternatively use expressions to generate the where clause.
 
+> There is also a safety feature built with version 0.1.5 where using multiple `where()` calls after the initial one get pushed to use `andWhere()`. This protects the developer from making a mistake when building the query WHERE conditions. Also, if the developer begins the `WHERE` clause by calling `andWhere()`, the `WHERE` clause will begin with `WHERE (1 = 1)` and all conditions after that will be added to the SQL as intended.
+
 Aliases
 ----------------
 
