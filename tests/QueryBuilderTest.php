@@ -919,4 +919,44 @@ class QueryBuilderTest extends TestCase {
 
         $qb->getSQL();
     }
+
+    public function testWhereChainingWithAndWhereAsFirst(): void
+    {
+        $qb = new QueryBuilder();
+
+        $qb->select('id')
+           ->from('users')
+           ->andWhere('id = :id');
+
+        $this->assertEquals("SELECT id FROM users WHERE (1 = 1) AND (id = :id)", (string)$qb);
+    }
+
+    public function testWrongfulWhereChainingWithTwoWheres(): void
+    {
+        $qb = new QueryBuilder();
+
+        $qb->select('id')
+           ->from('users')
+           ->where('id = :id')
+           ->setParameter('id', 1)
+           ->where('name = :name')
+           ->setParameter('name', 'John Doe');
+
+        $this->assertEquals("SELECT id FROM users WHERE (id = :id) AND (name = :name)", (string)$qb);
+    }
+
+
+    public function testWrongfulWhereChainingWithTwoAndWheres(): void
+    {
+        $qb = new QueryBuilder();
+
+        $qb->select('id')
+            ->from('users')
+            ->andWhere('id = :id')
+            ->setParameter('id', 1)
+            ->andWhere('name = :name')
+            ->setParameter('name', 'John Doe');
+
+        $this->assertEquals("SELECT id FROM users WHERE (1 = 1) AND (id = :id) AND (name = :name)", (string)$qb);
+    }
 }

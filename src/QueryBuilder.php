@@ -742,11 +742,15 @@ class QueryBuilder
      */
     public function where($predicates)
     {
-        if (! (func_num_args() === 1 && $predicates instanceof CompositeExpression)) {
-            $predicates = new CompositeExpression(CompositeExpression::TYPE_AND, func_get_args());
+        if($this->sqlParts['where'] === null) {
+            if (!(func_num_args() === 1 && $predicates instanceof CompositeExpression)) {
+                $predicates = new CompositeExpression(CompositeExpression::TYPE_AND, func_get_args());
+            }
+
+            return $this->add('where', $predicates);
         }
 
-        return $this->add('where', $predicates);
+        return $this->andWhere($predicates);
     }
 
     /**
@@ -769,6 +773,12 @@ class QueryBuilder
      */
     public function andWhere($where)
     {
+        # Inject a 1 = 1 clause to make sure the SQL stays correct in case the WHERE
+        # clause is not initialized
+        if ($this->sqlParts['where'] === null) {
+            $this->where('1 = 1');
+        }
+
         $args  = func_get_args();
         $where = $this->getQueryPart('where');
 
