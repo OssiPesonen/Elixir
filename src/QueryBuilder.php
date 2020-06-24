@@ -612,10 +612,10 @@ class QueryBuilder
      *         ->join('u', 'phonenumbers', 'p', 'p.is_primary = 1');
      * </code>
      *
-     * @param string $fromAlias     The alias or table name that points to a from clause.
-     * @param string $join          The table name to join.
-     * @param string $alias         The alias of the join table.
-     * @param string $condition     The condition for the join.
+     * @param string        $fromAlias     The alias or table name that points to a from clause.
+     * @param string        $join          The table name to join.
+     * @param string|null   $alias         The alias of the join table.
+     * @param string        $condition     The condition for the join.
      *
      * @return $this This QueryBuilder instance.
      */
