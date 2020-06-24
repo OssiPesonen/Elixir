@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Elixir;
 
+use Elixir\Exceptions\QueryException;
 use Elixir\QueryBuilder;
 use Elixir\ParameterType;
 use MongoDB\Driver\Query;
@@ -958,5 +959,120 @@ class QueryBuilderTest extends TestCase {
             ->setParameter('name', 'John Doe');
 
         $this->assertEquals("SELECT id FROM users WHERE (1 = 1) AND (id = :id) AND (name = :name)", (string)$qb);
+    }
+
+    public function testJoinWithoutAlias(): void
+    {
+        $qb = new QueryBuilder();
+
+        $qb->select('user.id')
+            ->from('user')
+            ->join('user','addresses','','addresses.user_id = user.id', true);
+
+        $this->assertEquals("SELECT user.id FROM user INNER JOIN addresses ON addresses.user_id = user.id", (string)$qb);
+    }
+
+    public function testInnerJoinWithoutAlias(): void
+    {
+        $qb = new QueryBuilder();
+
+        $qb->select('user.id')
+            ->from('user')
+            ->innerJoin('user','addresses','','addresses.user_id = user.id', true);
+
+        $this->assertEquals("SELECT user.id FROM user INNER JOIN addresses ON addresses.user_id = user.id", (string)$qb);
+    }
+
+    public function testLeftJoinWithoutAlias(): void
+    {
+        $qb = new QueryBuilder();
+
+        $qb->select('user.id')
+            ->from('user')
+            ->leftJoin('user','addresses','','addresses.user_id = user.id', true);
+
+        $this->assertEquals("SELECT user.id FROM user LEFT JOIN addresses ON addresses.user_id = user.id", (string)$qb);
+    }
+
+    public function testRightJoinWithoutAlias(): void
+    {
+        $qb = new QueryBuilder();
+
+        $qb->select('user.id')
+            ->from('user')
+            ->rightJoin('user','addresses','','addresses.user_id = user.id', true);
+
+        $this->assertEquals("SELECT user.id FROM user RIGHT JOIN addresses ON addresses.user_id = user.id", (string)$qb);
+    }
+
+    public function testMultipleJoinsWithoutAlias(): void
+    {
+        $qb = new QueryBuilder();
+
+        $qb->select('user.id')
+            ->from('user')
+            ->join('user','addresses','','addresses.user_id = user.id', true)
+            ->innerJoin('user','car','','car.user_id = user.id', true)
+            ->leftJoin('user','pet','','pet.user_id = user.id', true)
+            ->rightJoin('user','child','','child.user_id = user.id', true);
+
+        $this->assertEquals("SELECT user.id FROM user INNER JOIN addresses ON addresses.user_id = user.id INNER JOIN car ON car.user_id = user.id LEFT JOIN pet ON pet.user_id = user.id RIGHT JOIN child ON child.user_id = user.id", (string)$qb);
+    }
+
+
+    public function testLeftJoinWithSetExcludeAliases(): void
+    {
+        $qb = new QueryBuilder();
+
+        $qb->setExcludeAliases()
+            ->select('user.id')
+            ->from('user')
+            ->leftJoin('user','addresses','','addresses.user_id = user.id', true);
+
+        $this->assertEquals("SELECT user.id FROM user LEFT JOIN addresses ON addresses.user_id = user.id", (string)$qb);
+    }
+
+    public function testMultipleJoinsWithSetExcludeAliases(): void
+    {
+        $qb = new QueryBuilder();
+
+        $qb->setExcludeAliases()
+            ->select('user.id')
+            ->from('user')
+            ->join('user','addresses','','addresses.user_id = user.id')
+            ->innerJoin('user','car','','car.user_id = user.id')
+            ->leftJoin('user','pet','','pet.user_id = user.id')
+            ->rightJoin('user','child','','child.user_id = user.id');
+
+        $this->assertEquals("SELECT user.id FROM user INNER JOIN addresses ON addresses.user_id = user.id INNER JOIN car ON car.user_id = user.id LEFT JOIN pet ON pet.user_id = user.id RIGHT JOIN child ON child.user_id = user.id", (string)$qb);
+    }
+
+    public function testJoinWithAliasWhenExcludingThrowsException(): void
+    {
+        $qb = new QueryBuilder();
+
+        $this->expectException(QueryException::class);
+        $this->expectExceptionMessage("The given alias 'table_a' is not part of any FROM or JOIN clause table. The currently registered aliases are: a.");
+
+        $qb->select('table_a.id')
+            ->setExcludeAliases()
+            ->from('table_a', 'a')
+            ->join('table_a', 'table_b', 'a', 'table_b.fk_b = table_a.id')
+            ->join('table_a', 'table_c', 'a', 'table_c.fk_b = table_a.id');
+
+        self::assertEquals('', $qb->getSQL());
+    }
+
+    public function testJoinsWithExcludeAliasesButFromHasAlias(): void
+    {
+        $qb = new QueryBuilder();
+
+        $qb->select('a.id')
+            ->setExcludeAliases()
+            ->from('table_a', 'a')
+            ->join('a', 'table_b', 'a', 'table_b.fk_b = a.id')
+            ->join('a', 'table_c', 'a', 'table_c.fk_b = a.id');
+
+        self::assertEquals('SELECT a.id FROM table_a a INNER JOIN table_b ON table_b.fk_b = a.id INNER JOIN table_c ON table_c.fk_b = a.id', $qb->getSQL());
     }
 }

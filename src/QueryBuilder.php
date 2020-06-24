@@ -99,6 +99,13 @@ class QueryBuilder
     private $type = self::SELECT;
 
     /**
+     * Option to automatically excluded alias use from joins without the additional $excludeAlias parameter
+     *
+     * @var bool
+     */
+    private $excludeAliases = false;
+
+    /**
      * The state of the query object. Can be dirty or clean.
      *
      * @var int
@@ -276,6 +283,16 @@ class QueryBuilder
     public function getParameter($key)
     {
         return $this->params[$key] ?? null;
+    }
+
+    /**
+     * Exclude aliases from join clauses and instead use the table's full name
+     *
+     * @return $this
+     */
+    public function setExcludeAliases() {
+        $this->excludeAliases = true;
+        return $this;
     }
 
     /**
@@ -595,16 +612,17 @@ class QueryBuilder
      *         ->join('u', 'phonenumbers', 'p', 'p.is_primary = 1');
      * </code>
      *
-     * @param string $fromAlias The alias that points to a from clause.
-     * @param string $join      The table name to join.
-     * @param string $alias     The alias of the join table.
-     * @param string $condition The condition for the join.
+     * @param string $fromAlias     The alias or table name that points to a from clause.
+     * @param string $join          The table name to join.
+     * @param string $alias         The alias of the join table.
+     * @param string $condition     The condition for the join.
+     * @param bool   $excludeAlias The $alias will be set to an empty string and no check is performed on uniqueness
      *
      * @return $this This QueryBuilder instance.
      */
-    public function join($fromAlias, $join, $alias, $condition = null)
+    public function join($fromAlias, $join, $alias, $condition = null, $excludeAlias = false)
     {
-        return $this->innerJoin($fromAlias, $join, $alias, $condition);
+        return $this->innerJoin($fromAlias, $join, $alias, $condition, $excludeAlias);
     }
 
     /**
@@ -617,21 +635,26 @@ class QueryBuilder
      *         ->innerJoin('u', 'phonenumbers', 'p', 'p.is_primary = 1');
      * </code>
      *
-     * @param string $fromAlias The alias that points to a from clause.
-     * @param string $join      The table name to join.
-     * @param string $alias     The alias of the join table.
-     * @param string $condition The condition for the join.
+     * @param string $fromAlias     The alias or table name that points to a from clause.
+     * @param string $join          The table name to join.
+     * @param string $alias         The alias of the join table.
+     * @param string $condition     The condition for the join.
+     * @param bool   $excludeAlias The $alias will be set to an empty string and no check is performed on uniqueness
      *
      * @return $this This QueryBuilder instance.
      */
-    public function innerJoin($fromAlias, $join, $alias, $condition = null)
+    public function innerJoin($fromAlias, $join, $alias, $condition = null, $excludeAlias = false)
     {
+        # Exclude alias use if either class variable or given parameter is set to true
+        $excludeAlias = $this->excludeAliases || $excludeAlias;
+
         return $this->add('join', [
             $fromAlias => [
                 'joinType'      => 'inner',
                 'joinTable'     => $join,
-                'joinAlias'     => $alias,
+                'joinAlias'     => !$excludeAlias ? $alias : "",
                 'joinCondition' => $condition,
+                'excludeAlias'  => $excludeAlias
             ],
         ], true);
     }
@@ -646,21 +669,26 @@ class QueryBuilder
      *         ->leftJoin('u', 'phonenumbers', 'p', 'p.is_primary = 1');
      * </code>
      *
-     * @param string $fromAlias The alias that points to a from clause.
-     * @param string $join      The table name to join.
-     * @param string $alias     The alias of the join table.
-     * @param string $condition The condition for the join.
+     * @param string $fromAlias     The alias or table name that points to a from clause.
+     * @param string $join          The table name to join.
+     * @param string $alias         The alias of the join table.
+     * @param string $condition     The condition for the join.
+     * @param bool   $excludeAlias The $alias will be set to an empty string and no check is performed on uniqueness
      *
      * @return $this This QueryBuilder instance.
      */
-    public function leftJoin($fromAlias, $join, $alias, $condition = null)
+    public function leftJoin($fromAlias, $join, $alias, $condition = null, $excludeAlias = false)
     {
+        # Exclude alias use if either class variable or given parameter is set to true
+        $excludeAlias = $this->excludeAliases || $excludeAlias;
+
         return $this->add('join', [
             $fromAlias => [
                 'joinType'      => 'left',
                 'joinTable'     => $join,
-                'joinAlias'     => $alias,
+                'joinAlias'     => !$excludeAlias ? $alias : "",
                 'joinCondition' => $condition,
+                'excludeAlias'  => $excludeAlias
             ],
         ], true);
     }
@@ -675,21 +703,26 @@ class QueryBuilder
      *         ->rightJoin('u', 'phonenumbers', 'p', 'p.is_primary = 1');
      * </code>
      *
-     * @param string $fromAlias The alias that points to a from clause.
-     * @param string $join      The table name to join.
-     * @param string $alias     The alias of the join table.
-     * @param string $condition The condition for the join.
+     * @param string $fromAlias     The alias or table name that points to a from clause.
+     * @param string $join          The table name to join.
+     * @param string $alias         The alias of the join table.
+     * @param string $condition     The condition for the join.
+     * @param bool   $excludeAlias The $alias will be set to an empty string and no check is performed on uniqueness
      *
      * @return $this This QueryBuilder instance.
      */
-    public function rightJoin($fromAlias, $join, $alias, $condition = null)
+    public function rightJoin($fromAlias, $join, $alias, $condition = null, $excludeAlias = false)
     {
+        # Exclude alias use if either class variable or given parameter is set to true
+        $excludeAlias = $this->excludeAliases || $excludeAlias;
+
         return $this->add('join', [
             $fromAlias => [
                 'joinType'      => 'right',
                 'joinTable'     => $join,
-                'joinAlias'     => $alias,
+                'joinAlias'     => !$excludeAlias ? $alias : "",
                 'joinCondition' => $condition,
+                'excludeAlias'  => $excludeAlias
             ],
         ], true);
     }
@@ -1346,11 +1379,12 @@ class QueryBuilder
         }
 
         foreach ($this->sqlParts['join'][$fromAlias] as $join) {
-            if (array_key_exists($join['joinAlias'], $knownAliases)) {
+            if (!$join['excludeAlias'] && array_key_exists($join['joinAlias'], $knownAliases)) {
                 throw QueryException::nonUniqueAlias($join['joinAlias'], array_keys($knownAliases));
             }
+
             $sql                             .= ' ' . strtoupper($join['joinType'])
-                . ' JOIN ' . $join['joinTable'] . ' ' . $join['joinAlias']
+                . ' JOIN ' . $join['joinTable'] . ($join['excludeAlias'] ? '' : ' ' . $join['joinAlias'])
                 . ' ON ' . ((string) $join['joinCondition']);
             $knownAliases[$join['joinAlias']] = true;
         }
