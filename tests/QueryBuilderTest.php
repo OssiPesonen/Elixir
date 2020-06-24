@@ -350,19 +350,6 @@ class QueryBuilderTest extends TestCase {
         self::assertEquals('SELECT u.*, p.* FROM users u ORDER BY u.name ASC, u.username DESC', (string) $qb);
     }
 
-    public function testSelectAddAddOrderByTwice() : void
-    {
-        $qb   = new QueryBuilder();
-        $expr = $qb->expr();
-
-        $qb->select('u.*', 'p.*')
-            ->from('users', 'u')
-            ->orderBy('u.name')
-            ->orderBy('u.username', 'DESC');
-
-        self::assertEquals('SELECT u.*, p.* FROM users u ORDER BY u.username DESC', (string) $qb);
-    }
-
     public function testEmptySelect() : void
     {
         $qb  = new QueryBuilder();
@@ -980,7 +967,7 @@ class QueryBuilderTest extends TestCase {
 
         $qb->select('user.id')
             ->from('user')
-            ->join('user','addresses','','addresses.user_id = user.id');
+            ->join('user','addresses','','addresses.user_id = user.id', true);
 
         $this->assertEquals("SELECT user.id FROM user INNER JOIN addresses ON addresses.user_id = user.id", (string)$qb);
     }
@@ -991,7 +978,7 @@ class QueryBuilderTest extends TestCase {
 
         $qb->select('user.id')
             ->from('user')
-            ->innerJoin('user','addresses','addresses','addresses.user_id = user.id');
+            ->innerJoin('user','addresses','','addresses.user_id = user.id', true);
 
         $this->assertEquals("SELECT user.id FROM user INNER JOIN addresses ON addresses.user_id = user.id", (string)$qb);
     }
@@ -1002,7 +989,7 @@ class QueryBuilderTest extends TestCase {
 
         $qb->select('user.id')
             ->from('user')
-            ->leftJoin('user','addresses', null ,'addresses.user_id = user.id');
+            ->leftJoin('user','addresses','','addresses.user_id = user.id', true);
 
         $this->assertEquals("SELECT user.id FROM user LEFT JOIN addresses ON addresses.user_id = user.id", (string)$qb);
     }
@@ -1013,7 +1000,7 @@ class QueryBuilderTest extends TestCase {
 
         $qb->select('user.id')
             ->from('user')
-            ->rightJoin('user','addresses','','addresses.user_id = user.id');
+            ->rightJoin('user','addresses','','addresses.user_id = user.id', true);
 
         $this->assertEquals("SELECT user.id FROM user RIGHT JOIN addresses ON addresses.user_id = user.id", (string)$qb);
     }
@@ -1024,10 +1011,10 @@ class QueryBuilderTest extends TestCase {
 
         $qb->select('user.id')
             ->from('user')
-            ->join('user','addresses','','addresses.user_id = user.id')
-            ->innerJoin('user','car',null,'car.user_id = user.id')
-            ->leftJoin('user','pet','pet','pet.user_id = user.id')
-            ->rightJoin('user','child',null,'child.user_id = user.id');
+            ->join('user','addresses','','addresses.user_id = user.id', true)
+            ->innerJoin('user','car','','car.user_id = user.id', true)
+            ->leftJoin('user','pet','','pet.user_id = user.id', true)
+            ->rightJoin('user','child','','child.user_id = user.id', true);
 
         $this->assertEquals("SELECT user.id FROM user INNER JOIN addresses ON addresses.user_id = user.id INNER JOIN car ON car.user_id = user.id LEFT JOIN pet ON pet.user_id = user.id RIGHT JOIN child ON child.user_id = user.id", (string)$qb);
     }
@@ -1040,7 +1027,7 @@ class QueryBuilderTest extends TestCase {
         $qb->setExcludeAliases()
             ->select('user.id')
             ->from('user')
-            ->leftJoin('user','addresses','','addresses.user_id = user.id');
+            ->leftJoin('user','addresses','','addresses.user_id = user.id', true);
 
         $this->assertEquals("SELECT user.id FROM user LEFT JOIN addresses ON addresses.user_id = user.id", (string)$qb);
     }
@@ -1053,8 +1040,8 @@ class QueryBuilderTest extends TestCase {
             ->select('user.id')
             ->from('user')
             ->join('user','addresses','','addresses.user_id = user.id')
-            ->innerJoin('user','car',null,'car.user_id = user.id')
-            ->leftJoin('user','pet','pet','pet.user_id = user.id')
+            ->innerJoin('user','car','','car.user_id = user.id')
+            ->leftJoin('user','pet','','pet.user_id = user.id')
             ->rightJoin('user','child','','child.user_id = user.id');
 
         $this->assertEquals("SELECT user.id FROM user INNER JOIN addresses ON addresses.user_id = user.id INNER JOIN car ON car.user_id = user.id LEFT JOIN pet ON pet.user_id = user.id RIGHT JOIN child ON child.user_id = user.id", (string)$qb);
