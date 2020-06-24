@@ -605,12 +605,6 @@ class QueryBuilder
     /**
      * Creates and adds a join to the query.
      *
-     * $alias is omitted from the clause on the following conditions:
-     *
-     * - $join matches $alias
-     * - $join is NULL or and empty string
-     * - $excludeAliases (class variable) is set to TRUE
-     *
      * <code>
      *     $qb = $conn->createQueryBuilder()
      *         ->select('u.name')
@@ -631,11 +625,13 @@ class QueryBuilder
     }
 
     /**
-     * Determines if an alias should be excluded from a JOIN clause
+     * Determines if an alias should be excluded from a JOIN clause.
+     * This can happen if $excludeAliases is set to TRUE, $join matches $alias or $alias is empty string or NULL
      *
-     * @param $join
-     * @param $alias
-     * @return bool
+     * @param string        $join      The table name to join
+     * @param string|null   $alias     The alias of the join table.
+     *
+     * @return bool TRUE if $alias should be excluded, FALSE otherwise
      */
     private function doExcludeJoinAlias($join, $alias): bool {
         return $this->excludeAliases || $join === $alias || empty($alias);
@@ -644,12 +640,6 @@ class QueryBuilder
     /**
      * Creates and adds a join to the query.
      *
-     * $alias is omitted from the clause on the following conditions:
-     *
-     * - $join matches $alias
-     * - $join is NULL or and empty string
-     * - $excludeAliases (class variable) is set to TRUE
-     *
      * <code>
      *     $qb = $conn->createQueryBuilder()
      *         ->select('u.name')
@@ -657,10 +647,10 @@ class QueryBuilder
      *         ->innerJoin('u', 'phonenumbers', 'p', 'p.is_primary = 1');
      * </code>
      *
-     * @param string $fromAlias     The alias or table name that points to a from clause.
-     * @param string|null $join     The table name to join.
-     * @param string $alias         The alias of the join table.
-     * @param string $condition     The condition for the join.
+     * @param string        $fromAlias     The alias or table name that points to a from clause.
+     * @param string        $join          The table name to join.
+     * @param string|null   $alias         The alias of the join table.
+     * @param string        $condition     The condition for the join.
      *
      * @return $this This QueryBuilder instance.
      */
@@ -682,12 +672,6 @@ class QueryBuilder
     /**
      * Creates and adds a left join to the query.
      *
-     * $alias is omitted from the clause on the following conditions:
-     *
-     * - $join matches $alias
-     * - $join is NULL or and empty string
-     * - $excludeAliases (class variable) is set to TRUE
-     *
      * <code>
      *     $qb = $conn->createQueryBuilder()
      *         ->select('u.name')
@@ -695,10 +679,10 @@ class QueryBuilder
      *         ->leftJoin('u', 'phonenumbers', 'p', 'p.is_primary = 1');
      * </code>
      *
-     * @param string $fromAlias     The alias or table name that points to a from clause.
-     * @param string $join          The table name to join.
-     * @param string $alias         The alias of the join table.
-     * @param string $condition     The condition for the join.
+     * @param string        $fromAlias     The alias or table name that points to a from clause.
+     * @param string        $join          The table name to join.
+     * @param string|null   $alias         The alias of the join table.
+     * @param string        $condition     The condition for the join.
      *
      * @return $this This QueryBuilder instance.
      */
@@ -727,10 +711,10 @@ class QueryBuilder
      *         ->rightJoin('u', 'phonenumbers', 'p', 'p.is_primary = 1');
      * </code>
      *
-     * @param string $fromAlias     The alias or table name that points to a from clause.
-     * @param string $join          The table name to join.
-     * @param string $alias         The alias of the join table.
-     * @param string $condition     The condition for the join.
+     * @param string        $fromAlias     The alias or table name that points to a from clause.
+     * @param string        $join          The table name to join.
+     * @param string|null   $alias         The alias of the join table.
+     * @param string        $condition     The condition for the join.
      *
      * @return $this This QueryBuilder instance.
      */

@@ -1053,8 +1053,8 @@ class QueryBuilderTest extends TestCase {
             ->select('user.id')
             ->from('user')
             ->join('user','addresses','','addresses.user_id = user.id')
-            ->innerJoin('user','car','','car.user_id = user.id')
-            ->leftJoin('user','pet','','pet.user_id = user.id')
+            ->innerJoin('user','car',null,'car.user_id = user.id')
+            ->leftJoin('user','pet','pet','pet.user_id = user.id')
             ->rightJoin('user','child','','child.user_id = user.id');
 
         $this->assertEquals("SELECT user.id FROM user INNER JOIN addresses ON addresses.user_id = user.id INNER JOIN car ON car.user_id = user.id LEFT JOIN pet ON pet.user_id = user.id RIGHT JOIN child ON child.user_id = user.id", (string)$qb);
